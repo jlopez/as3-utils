@@ -1,30 +1,30 @@
 package com.jla.as3.util
 {
     /**
-     *   Creates a string with variable substitutions. Very similiar to printf, specially python's printf
+     *   Creates a string with variable substitutions. Very similar to printf, specially python's printf
      *   @param raw The string to be substituted.
-     *   @param rest  The objects to be substitued, can be positional or by properties inside the object (in wich case only one object can be passed)
-     *   @return The formated and substitued string.
+     *   @param rest  The objects to be substituted, can be positional or by properties inside the object (in which case only one object can be passed)
+     *   @return The formatted and substituted string.
      *   @example
      *   <pre>
      *
-     *   // objects are substitued in the other they appear
+     *   // objects are substituted in the other they appear
      *
-     *   printf("This is an %s lybrary for creating %s", "Actioscript 3.0", "strings");
-     *   // outputs: "This is an Actioscript 3.0 lybrary for creating strings";
+     *   printf("This is a %s library for creating %s", "Actionscript 3.0", "strings");
+     *   // outputs: "This is an Actionscript 3.0 library for creating strings";
      *   // you can also format numbers:
      *
      *   printf("You can also display numbers like PI: %f, and format them to a fixed precision, such as PI with 3 decimal places %.3f", Math.PI, Math.PI);
      *   // outputs: " You can also display numbers like PI: 3.141592653589793, and format them to a fixed precision, such as PI with 3 decimal places 3.142"
-     *   // Instead of positional (the order of arguments to print f, you can also use propertie of an object):
+     *   // Instead of positional (the order of arguments to print f, you can also use properties of an object):
      *   var userInfo : Object = {
      "name": "Arthur Debert",
      "email": "arthur@stimuli.com.br",
      "website":"http://www.stimuli.com.br/",
-     "ocupation": "developer"
+     "occupation": "developer"
      }
      *
-     *   printf("My name is %(name)s and I am a %(ocupation)s. You can read more on my personal %(website)s, or reach me through my %(email)s", userInfo);
+     *   printf("My name is %(name)s and I am a %(occupation)s. You can read more on my personal %(website)s, or reach me through my %(email)s", userInfo);
      *   // outputs: "My name is Arthur Debert and I am a developer. You can read more on my personal http://www.stimuli.com.br/, or reach me through my arthur@stimuli.com.br"
      *   // you can also use date parts:
      *   var date : Date = new Date();
@@ -36,11 +36,11 @@ package com.jla.as3.util
     public function vsprintf(raw : String, rest : Array) : String {
         /**
          * Pretty ugly!
-         *   basicaly
+         *   basically
          *   % -> the start of a substitution hole
          *   (some_var_name) -> [optional] used in named substitutions
-         *   .xx -> [optional] the precision with witch numbers will be formated
-         *   x -> the formatter (string, hexa, float, date part)
+         *   .xx -> [optional] the precision with witch numbers will be formatted
+         *   x -> the formatter (string, hex, float, date part)
          */
         var SUBS_RE : RegExp = /%(?!^%)(\((?P<var_name>[\w]+[\w_\d]+)\))?(?P<padding>[0-9]{1,2})?(\.(?P<precision>[0-9]+))?(?P<formatter>[sxofaAbBcdHIjmMpSUwWxXyYZ])/ig;
 
@@ -56,7 +56,7 @@ package com.jla.as3.util
         var numMatches : int = 0;
         var numberVariables : int = rest.length;
         // quick check if we find string subs amongst the text to match (something like %(foo)s
-        var isPositionalSubts : Boolean = !Boolean(raw.match(/%\(\s*[\w\d_]+\s*\)/));
+        var isPositionalSubst : Boolean = !Boolean(raw.match(/%\(\s*[\w\d_]+\s*\)/));
         var replacementValue : *;
         var formatter : String;
         var varName : String;
@@ -93,7 +93,7 @@ package com.jla.as3.util
                     }
                 }
             }
-            if (isPositionalSubts){
+            if (isPositionalSubst){
                 // by position, grab next subs:
                 replacementValue = rest[matches.length];
 
@@ -125,16 +125,16 @@ package com.jla.as3.util
                     match.replacement = padString(int(replacementValue).toString(), paddingNum, paddingChar);
                 }else if (formatter == OCTAL_FORMATTER){
                     match.replacement = "0" + int(replacementValue).toString(8);
-                }else if (formatter == HEXA_FORMATTER){
+                }else if (formatter == HEX_FORMATTER){
                     match.replacement = "0x" + padString(int(replacementValue).toString(16), paddingNum, paddingChar);
-                }else if (formatter == HEXA_FORMATTER_UPPERCASE){
+                }else if (formatter == HEX_FORMATTER_UPPERCASE){
                     match.replacement = "0x" + padString(int(replacementValue).toString(16).toUpperCase(), paddingNum, paddingChar);
                 }else if(DATES_FORMATTERS.indexOf(formatter) > -1){
                     switch (formatter){
                         case DATE_DAY_FORMATTER:
                             match.replacement = replacementValue["date"];
                             break;
-                        case DATE_FULLYEAR_FORMATTER:
+                        case DATE_FULL_YEAR_FORMATTER:
                             match.replacement = replacementValue["fullYear"];
                             break;
                         case DATE_YEAR_FORMATTER:
@@ -150,10 +150,10 @@ package com.jla.as3.util
                             var hours24 : Number = replacementValue["hours"];
                             match.replacement =  (hours24 -12).toString();
                             break;
-                        case DATE_HOUR_AMPM_FORMATTER:
+                        case DATE_HOUR_AM_PM_FORMATTER:
                             match.replacement =  (replacementValue["hours"]  >= 12 ? "p.m" : "a.m");
                             break;
-                        case DATE_TOLOCALE_FORMATTER:
+                        case DATE_TO_LOCALE_FORMATTER:
                             match.replacement = (replacementValue as Date).toLocaleString();
                             break;
                         case DATE_MINUTES_FORMATTER:
@@ -188,12 +188,12 @@ package com.jla.as3.util
         // now actually do the substitution, keeping a buffer to be joined at
         //the end for better performance
         var buffer : Array = [];
-        var lastMatch : Match;
-        // beggininf os string, if it doesn't start with a substitition
+        var lastMatch : Match = null;
+        // beginning os string, if it doesn't start with a substitution
         var previous : String = raw.substr(0, matches[0].startIndex);
         var subs : String;
         for each(match in matches){
-            // finds out the previous string part and the next substitition
+            // finds out the previous string part and the next substitution
             if (lastMatch){
                 previous = raw.substring(lastMatch.endIndex  ,  match.startIndex);
             }
@@ -220,15 +220,15 @@ const INTEGER_FORMATTER : String = "d";
 /** Converts to an OCTAL number */
 const OCTAL_FORMATTER : String = "o";
 /** Converts to hex (includes 0x) */
-const HEXA_FORMATTER : String = "x";
+const HEX_FORMATTER : String = "x";
 /** Converts to uppercase hex (includes 0x) */
-const HEXA_FORMATTER_UPPERCASE : String = "X";
+const HEX_FORMATTER_UPPERCASE : String = "X";
 /** @private */
 const DATES_FORMATTERS : String = "aAbBcDHIjmMpSUwWxXyYZ";
 /** Day of month, from 0 to 30 on <code>Date</code> objects.*/
 const DATE_DAY_FORMATTER : String = "D";
 /** Full year, e.g. 2007 on <code>Date</code> objects.*/
-const DATE_FULLYEAR_FORMATTER : String = "Y";
+const DATE_FULL_YEAR_FORMATTER : String = "Y";
 /** Year, e.g. 07 on <code>Date</code> objects.*/
 const DATE_YEAR_FORMATTER : String = "y";
 /** Month from 1 to 12 on <code>Date</code> objects.*/
@@ -238,13 +238,13 @@ const DATE_HOUR24_FORMATTER : String = "H";
 /** Hours 0-12 on <code>Date</code> objects.*/
 const DATE_HOUR_FORMATTER : String = "I";
 /** a.m or p.m on <code>Date</code> objects.*/
-const DATE_HOUR_AMPM_FORMATTER : String = "p";
+const DATE_HOUR_AM_PM_FORMATTER : String = "p";
 /** Minutes on <code>Date</code> objects.*/
 const DATE_MINUTES_FORMATTER : String = "M";
 /** Seconds on <code>Date</code> objects.*/
 const DATE_SECONDS_FORMATTER : String = "S";
 /** A string rep of a <code>Date</code> object on the current locale.*/
-const DATE_TOLOCALE_FORMATTER : String = "c";
+const DATE_TO_LOCALE_FORMATTER : String = "c";
 
 var version : String = "$Id$";
 
