@@ -5,6 +5,7 @@ package com.jla.as3.util
 {
     import flash.display.Shape;
     import flash.display.Sprite;
+    import flash.display.Stage;
     import flash.events.UncaughtErrorEvent;
     import flash.text.TextField;
     import flash.text.TextFormat;
@@ -12,11 +13,12 @@ package com.jla.as3.util
 
     public class UncaughtErrorOverlay
     {
-        private static var _root:Sprite;
+        private static var _root:Stage;
         private static var _textField:TextField;
 
-        public static function instrument(root:Sprite):void
+        public static function init(root:Stage):void
         {
+            if (_root) return;
             root.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, uncaughtErrorHandler);
             _root = root;
 
