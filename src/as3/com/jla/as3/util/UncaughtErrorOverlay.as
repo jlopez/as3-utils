@@ -4,9 +4,9 @@
 package com.jla.as3.util
 {
     import flash.display.Shape;
-    import flash.display.Sprite;
     import flash.display.Stage;
     import flash.events.UncaughtErrorEvent;
+    import flash.events.UncaughtErrorEvents;
     import flash.text.TextField;
     import flash.text.TextFormat;
     import flash.utils.getQualifiedClassName;
@@ -16,10 +16,10 @@ package com.jla.as3.util
         private static var _root:Stage;
         private static var _textField:TextField;
 
-        public static function init(root:Stage):void
+        public static function init(root:Stage, uncaughtErrorEvents:UncaughtErrorEvents):void
         {
             if (_root) return;
-            root.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, uncaughtErrorHandler);
+            uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, uncaughtErrorHandler);
             _root = root;
 
             function uncaughtErrorHandler(event:UncaughtErrorEvent):void

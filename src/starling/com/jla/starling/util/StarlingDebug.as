@@ -9,6 +9,7 @@ package com.jla.starling.util
     import com.jla.as3.util.sprintf;
     import com.jla.starling.shortcut.ShortcutPanel;
 
+    import flash.display.LoaderInfo;
     import flash.geom.Rectangle;
 
     import starling.core.Starling;
@@ -22,10 +23,12 @@ package com.jla.starling.util
     {
         private static var sHelperRect:Rectangle = new Rectangle();
 
-        public static function install():void
+        public static function install(loaderInfo:LoaderInfo = null):void
         {
+            if (!loaderInfo)
+                loaderInfo = Starling.current.nativeStage.getChildAt(0).loaderInfo;
+            UncaughtErrorOverlay.init(Starling.current.nativeStage, loaderInfo.uncaughtErrorEvents);
             Shortcuts.init(Starling.current.nativeStage);
-            UncaughtErrorOverlay.init(Starling.current.nativeStage);
             Shortcuts.add('^d', dumpCommand);
             Shortcuts.add('^p', pinpointCommand);
             new ShortcutPanel(Starling.current.stage);
