@@ -3,7 +3,7 @@
  */
 package com.jla.starling.util
 {
-    import com.jla.as3.shortcut.ShortcutManager;
+    import com.jla.as3.shortcut.Shortcuts;
     import com.jla.as3.util.StringUtils;
     import com.jla.as3.util.UncaughtErrorOverlay;
     import com.jla.as3.util.sprintf;
@@ -24,10 +24,10 @@ package com.jla.starling.util
 
         public static function install():void
         {
+            Shortcuts.init(Starling.current.nativeStage);
             UncaughtErrorOverlay.init(Starling.current.nativeStage);
-            var mgr:ShortcutManager = ShortcutManager.init(Starling.current.nativeStage);
-            mgr.addShortcut('^d', dumpCommand);
-            mgr.addShortcut('^p', pinpointCommand);
+            Shortcuts.add('^d', dumpCommand);
+            Shortcuts.add('^p', pinpointCommand);
             new ShortcutPanel(Starling.current.stage);
 
             function dumpCommand():void

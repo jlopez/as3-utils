@@ -150,7 +150,20 @@ package com.jla.as3.shortcut
                     }
                 }
             }
+            if (!shortcut.label && !shortcut.hotKey)
+                return null;
+            if (shortcut.callback === null && shortcut.options === null)
+            {
+                shortcut.options = [ false, true ];
+                shortcut.optionLabels ||= [ 'Off', 'On' ];
+            }
             return shortcut;
+        }
+
+        public function equalTo(other:Shortcut):Boolean
+        {
+            return _id && other._id == _id || _label && other._label == _label ||
+                   !_id && !_label && _hotKey && _hotKey == other._hotKey;
         }
     }
 }

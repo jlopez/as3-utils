@@ -4,7 +4,7 @@
 package com.jla.starling.shortcut
 {
     import com.jla.as3.shortcut.Shortcut;
-    import com.jla.as3.shortcut.ShortcutManager;
+    import com.jla.as3.shortcut.Shortcuts;
     import com.jla.starling.util.*;
 
     import starling.core.Starling;
@@ -25,10 +25,11 @@ package com.jla.starling.shortcut
         public function ShortcutPanel(stage:Stage)
         {
             var trigger:EasterEggTrigger = new EasterEggTrigger(stage);
+            trigger.delay = 1000;
             //noinspection JSValidateTypes
             trigger.addEventListener(Event.TRIGGERED, show);
 
-            ShortcutManager.instance.addShortcut('^ ', togglePanel);
+            Shortcuts.add('^ ', togglePanel);
         }
 
         private function togglePanel():void
@@ -56,12 +57,12 @@ package com.jla.starling.shortcut
             var width:int = stage.stageWidth;
             var height:int = stage.stageHeight;
             _overlay = new Sprite();
-            var background:Image = ScreenShot.asImage(stage, 1, 0xffffffff);
-            background.filter = new BlurFilter();
-            _overlay.addChild(background);
-            var dimmer:Quad = new Quad(width, height);
-            dimmer.alpha = 0.95;
-            _overlay.addChild(dimmer);
+            //var background:Image = ScreenShot.asImage(stage, 1, 0xffffffff);
+            //background.filter = new BlurFilter();
+            //_overlay.addChild(background);
+            //var dimmer:Quad = new Quad(width, height);
+            //dimmer.alpha = 0.95;
+            //_overlay.addChild(dimmer);
             _overlay.addChild(new Quad(width, height, 0xf8f8f8));
             var header:TextField = new TextField(stage.stageWidth, 50, "Shortcuts", "_sans", 34, 0, true);
             header.x = 0;
@@ -76,7 +77,7 @@ package com.jla.starling.shortcut
             _addLine(0x8b8b8b, 128, width);
 
             var y:int = 129;
-            for each (var shortcut:Shortcut in ShortcutManager.instance.shortcuts)
+            for each (var shortcut:Shortcut in Shortcuts.instance.shortcuts)
             {
                 if (!shortcut.label) continue;
                 var cell:Cell = new Cell(shortcut, width);

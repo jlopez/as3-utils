@@ -19,7 +19,7 @@ package com.jla.starling.util
     {
         private var _stage:Stage;
         private var _hotSpot:Rectangle = new Rectangle();
-        private var _triggerDelay:int = 3000;
+        private var _delay:int = 3000;
         private var _trackedTouchId:int = -1;
         private var _triggerTimer:int;
 
@@ -27,7 +27,7 @@ package com.jla.starling.util
         {
             _stage = stage;
             _stage.addEventListener(TouchEvent.TOUCH, onTouch);
-            _hotSpot.setTo(0, 0, 100, 100);
+            _hotSpot.setTo(0, 0, 100, stage.stageHeight);
         }
 
         public function get hotSpot():Rectangle
@@ -35,14 +35,14 @@ package com.jla.starling.util
             return _hotSpot;
         }
 
-        public function get triggerDelay():int
+        public function get delay():int
         {
-            return _triggerDelay;
+            return _delay;
         }
 
-        public function set triggerDelay(value:int):void
+        public function set delay(value:int):void
         {
-            _triggerDelay = value;
+            _delay = value;
         }
 
         private function onTouch(event:TouchEvent):void
@@ -54,7 +54,7 @@ package com.jla.starling.util
                 if (touch && locationQualifies(touch))
                 {
                     _trackedTouchId = touch.id;
-                    _triggerTimer = setTimeout(trigger, _triggerDelay);
+                    _triggerTimer = setTimeout(trigger, _delay);
                 }
             }
             else
